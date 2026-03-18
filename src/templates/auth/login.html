@@ -1,0 +1,41 @@
+{% extends 'auth/base_auth.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+<form class=" form-signin" action="/login" method="POST">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <br>
+  {% for message in messages %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error:</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <h1 class="h3 mb-3 fw-normal">Iniciar Sesión</h1>
+
+  <div class="form-floating">
+    <input type="email" class="form-control" id="floatingInput" name="namee" placeholder="name@example.com">
+    <label for="floatingInput">Correo electronico</label>
+  </div>
+  <div class="form-floating">
+    <input type="password" class="form-control" id="floatingPassword" name="password_hash" placeholder="Password">
+    <label for="floatingPassword">Contraseña</label>
+  </div>
+
+  <div class="checkbox mb-3">
+    <label>
+      <input type="checkbox" value="remember-me"> Recuerdame
+    </label>
+  </div>
+  <button class="w-100 btn btn-lg btn-primary" type="submit">Iniciar Sesión </button>
+</form>
+{% endblock %}

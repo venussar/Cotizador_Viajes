@@ -1,0 +1,206 @@
+{% extends './base.html' %}
+
+{% block title %}Gestión de Vehículos{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Gestión de Vehículos</h2>
+        </div>
+
+        <button class="btn btn-primary px-4 py-2 shadow" data-bs-toggle="modal" data-bs-target="#modalNuevoVehiculo">
+            + Nuevo Vehículo
+        </button>
+    </div>
+
+    <!-- Tabla de vehículos -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="bg-light">
+                    <tr class="text-muted small">
+                        <th class="ps-4">TIPO DE VEHÍCULO</th>
+                        <th>CONSUMO (KM/GAL)</th>
+                        <th>COSTO CHÓFER</th>
+                        <th>COSTO MANO OBRA</th>
+                        <th class="text-center">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in vehicles %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">{{ v.type_vehicles }}</td>
+                        <td>{{ v.fuel_consumption_km }}</td>
+                        <td>${{ "%.2f"|format(v.driver_cost) }}</td>
+                        <td>${{ "%.2f"|format(v.labor_cost) }}</td>
+                        <td class="text-center">
+                            <!-- Botón Editar -->
+                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                data-bs-target="#modalEditar{{ v.id }}">
+                                Editar
+                            </button>
+                            <!-- Botón Eliminar -->
+                            <form action="{{ url_for('vehicle.delete_vehicle', id=v.id) }}" method="POST"
+                                class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este vehículo?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <!-- Modal Editar (uno por vehículo) -->
+                    <div class="modal fade" id="modalEditar{{ v.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-4 shadow">
+                                <div class="modal-header border-0 pb-0">
+                                    <h5 class="modal-title fw-bold">Editar Vehículo</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body px-4 pt-3">
+                                    <form id="formEditar{{ v.id }}" method="POST"
+                                        action="{{ url_for('vehicle.edit_vehicle', id=v.id) }}">
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Tipo de Vehículo</label>
+                                            <input type="text" class="form-control" name="tipo_vehiculo"
+                                                value="{{ v.type_vehicles }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Consumo Combustible (KM/Gal)</label>
+                                            <input type="number" class="form-control" name="consumo_combustible"
+                                                value="{{ v.fuel_consumption_km }}" step="0.01" min="0" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Costo Conductor ($)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control" name="costo_chofer"
+                                                    value="{{ v.driver_cost }}" step="0.01" min="0" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Costo Mano de Obra ($)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control" name="costo_mano_obra"
+                                                    value="{{ v.labor_cost }}" step="0.01" min="0" required>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                                    <button type="button" class="btn btn-outline-secondary px-4"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" form="formEditar{{ v.id }}" class="btn btn-primary px-4">
+                                        Guardar Cambios
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+
+                    {% if vehicles|length == 0 %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No hay vehículos registrados. ¡Agrega el primero!
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Nuevo Vehículo -->
+<div class="modal fade" id="modalNuevoVehiculo" tabindex="-1" aria-labelledby="modalNuevoVehiculoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalNuevoVehiculoLabel">Registrar Nuevo Vehículo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body px-4 pt-3">
+                <form id="formNuevoVehiculo" method="POST" action="{{ url_for('vehicle.create_vehicle') }}">
+
+                    <!-- Tipo de Vehículo -->
+                    <div class="mb-3">
+                        <label for="tipoVehiculo" class="form-label fw-semibold">Tipo de Vehículo</label>
+                        <select class="form-select" id="tipoVehiculo" name="tipo_vehiculo" required>
+                            <option value="" selected disabled>Seleccionar tipo</option>
+                            <option value="Campero">Campero</option>
+                            <option value="Doble Cabina">Doble Cabina</option>
+                            <option value="Buseta">Buseta</option>
+                            <option value="Microbus">Microbus</option>
+                            <option value="Bus">Bus</option>
+                        </select>
+                    </div>
+
+                    <!-- Consumo de Combustible -->
+                    <div class="mb-3">
+                        <label for="consumoCombustible" class="form-label fw-semibold">Consumo Combustible
+                            (KM/Gal)</label>
+                        <input type="number" class="form-control" id="consumoCombustible" name="consumo_combustible"
+                            step="0.01" min="0" required>
+                    </div>
+
+                    <!-- Costo Chófer -->
+                    <div class="mb-3">
+                        <label for="costoChofer" class="form-label fw-semibold">Costo Chófer ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="costoChofer" name="costo_chofer" step="0.01"
+                                min="0" required>
+                        </div>
+                    </div>
+
+                    <!-- Costo Mano de Obra -->
+                    <div class="mb-3">
+                        <label for="costoManoObra" class="form-label fw-semibold">Costo Mano de Obra ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="costoManoObra" name="costo_mano_obra"
+                                step="0.01" min="0" required>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formNuevoVehiculo" class="btn btn-primary px-4">
+                    Guardar Vehículo
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Historial de Cotizaciones{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/historial.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+
+    <!-- Encabezado -->
+    <div class="historial-header">
+        <div>
+            <h2>Historial de Cotizaciones</h2>
+        </div>
+        <div class="historial-actions">
+            <button class="btn-exportar" id="btnExportarCSV">
+                Exportar CSV
+            </button>
+            <button class="btn-imprimir" id="btnImprimir">
+                Imprimir Reporte
+            </button>
+        </div>
+    </div>
+
+    <!-- Panel principal -->
+    <div class="historial-panel">
+
+        <!-- Barra de filtros -->
+        <div class="filtros-row">
+            <div class="search-wrapper">
+                <input type="text" class="input-buscar" id="inputBuscar"
+                    placeholder="Buscar por ID, cliente o vehículo...">
+            </div>
+            <button class="btn-filtro" id="btnSemana">
+                Esta Semana
+            </button>
+            <button class="btn-filtro" id="btnFiltros">
+                Filtros
+            </button>
+        </div>
+
+        <!-- Tabla de cotizaciones -->
+        <table class="historial-table" id="tablaCotizaciones">
+            <thead>
+                <tr>
+                    <th>ID / Fecha</th>
+                    <th>Vehículo </th>
+                    <th>Distancia</th>
+                    <th>Generado por</th>
+                    <th>Total</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+
+
+            {% endblock %}

@@ -1,0 +1,235 @@
+/* ===== Historial de Cotizaciones ===== */
+
+.historial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.historial-header h2 {
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: #1b2a4a;
+}
+
+.historial-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.historial-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-exportar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #1b2a4a;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-exportar:hover {
+    background: #f8f9fa;
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.btn-imprimir {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #1b2a4a;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-imprimir:hover {
+    background: #243656;
+}
+
+/* ===== Panel de filtros ===== */
+.historial-panel {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.filtros-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtros-row .input-buscar {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filtros-row .input-buscar:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-wrapper .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.btn-filtro {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #475569;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-filtro:hover {
+    background: #f8f9fa;
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+/* ===== Tabla ===== */
+.historial-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.historial-table thead th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.historial-table tbody tr {
+    transition: background 0.15s;
+}
+
+.historial-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.historial-table tbody td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+    font-size: 0.9rem;
+    color: #334155;
+}
+
+.historial-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.cot-id {
+    font-weight: 600;
+    color: #0d6efd;
+    font-size: 0.85rem;
+}
+
+.cot-fecha {
+    display: block;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.cot-vehiculo {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.cot-cliente {
+    display: block;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.cot-total {
+    font-weight: 700;
+    color: #1b2a4a;
+    font-size: 1rem;
+}
+
+.btn-detalle {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+
+.btn-detalle:hover {
+    background: #f1f5f9;
+    color: #0d6efd;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .historial-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filtros-row {
+        flex-direction: column;
+    }
+
+    .historial-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+
+    <!-- Encabezado -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Resumen general del sistema</p>
+        </div>
+    </div>
+
+    <!-- Tarjetas de indicadores -->
+    <div class="stats-cards">
+
+        <!-- Cotizaciones Totales -->
+        <div class="stat-card animate-fade-in">
+            <p class="stat-title">Cotizaciones Totales</p>
+        </div>
+
+        <!-- Vehículos Activos -->
+        <div class="stat-card animate-fade-in" style="animation-delay: 0.1s;">
+            <p class="stat-title">Vehículos Activos</p>
+        </div>
+
+        <!-- Usuarios Registrados -->
+        <div class="stat-card animate-fade-in" style="animation-delay: 0.2s;">
+            <p class="stat-title">Usuarios Registrados</p>
+        </div>
+
+        <!-- Actividad Reciente -->
+        <div class="stat-card animate-fade-in" style="animation-delay: 0.3s;">
+            <p class="stat-title">Actividad Reciente</p>
+        </div>
+
+    </div>
+
+    <!-- Accesos directos -->
+    <div class="shortcuts-section">
+        <h5 class="section-title">Accesos Directos</h5>
+        <div class="shortcuts-grid">
+
+            <a href="{{ url_for('quote.cotizaciones') }}" class="shortcut-card">
+                <div>
+                    <strong>Nueva Cotización</strong>
+                    <p>Crear una cotización de servicio</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('quote.historial') }}" class="shortcut-card">
+                <div>
+                    <strong>Historial</strong>
+                    <p>Consultar cotizaciones anteriores</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('vehicle.vehicles') }}" class="shortcut-card">
+                <div>
+                    <strong>Vehículos</strong>
+                    <p>Gestionar flota de vehículos</p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

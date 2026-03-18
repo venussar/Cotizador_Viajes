@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Nueva Cotización{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cotizaciones.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Nueva Cotización</h2>
+        </div>
+        <div>
+            <button class="btn btn-outline-secondary btn-sm me-1" id="btnLimpiar"> Limpiar</button>
+            <button class="btn btn-outline-secondary btn-sm" id="btnPDF"> PDF</button>
+        </div>
+    </div>
+
+    <!-- Layout dos columnas -->
+    <div class="cotizacion-wrapper">
+
+        <!-- IZQUIERDA: Formulario -->
+        <div>
+            <form id="formCotizacion">
+
+                <!-- Tipo de Vehículo -->
+                <div class="card mb-3">
+                    <div class="card-header bg-white">
+                        <strong>Tipo de Vehículo</strong>
+                    </div>
+                    <div class="card-body">
+                        <select class="form-select" id="tipoVehiculo" name="tipo_vehiculo" required>
+                            <option value="" selected disabled>Seleccionar vehículo</option>
+                            {% for vehiculo in vehiculos %}
+                            <option value="{{ vehiculo.id }}">{{ vehiculo.tipo_vehiculo }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Datos del Servicio -->
+                <div class="card mb-3">
+                    <div class="card-header bg-white">
+                        <strong> Datos del Servicio</strong>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="distancia" class="form-label">Distancia ida y vuelta (km)</label>
+                                <input type="number" class="form-control" id="distancia" placeholder="0" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="precioCombustible" class="form-label">Precio combustible ($/gal)</label>
+                                <input type="number" class="form-control" id="precioCombustible" placeholder="0" min="0"
+                                    step="0.01">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="peajes" class="form-label">Valor de peajes ($)</label>
+                                <input type="number" class="form-control" id="peajes" placeholder="0" min="0"
+                                    step="0.01">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="incentivos" class="form-label">Incentivos ($)</label>
+                                <input type="number" class="form-control" id="incentivos" placeholder="0" min="0"
+                                    step="0.01">
+                            </div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label for="hotel" class="form-label">Costo de hotel ($)</label>
+                            <input type="number" class="form-control" id="hotel" placeholder="0" min="0" step="0.01">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Margen de Comisión -->
+                <div class="card mb-3">
+                    <div class="card-header bg-white">
+                        <strong>Margen de Comisión</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label mb-0">Porcentaje</label>
+                            <span class="comision-valor" id="comisionDisplay">15%</span>
+                        </div>
+                        <input type="range" class="form-range" id="comision" min="0" max="50" value="15">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">0%</small>
+                            <small class="text-muted">50%</small>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- DERECHA: Resumen -->
+        <div>
+
+            <!-- Total -->
+            <div class="resumen-total mb-3">
+                <small class="text-uppercase" style="color: #94a3b8;">Costo Total Estimado</small>
+                <div class="total-monto" id="totalGeneral">$0.00</div>
+                <small style="color: #64748b;">Incluye comisión</small>
+            </div>
+
+            <!-- Desglose -->
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <strong>Costos</strong>
+                </div>
+                <div class="card-body">
+                    <div class="breakdown-item">
+                        <span> Combustible</span>
+                        <strong id="costoCombustible">$0.00</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Peajes</span>
+                        <strong id="costoPeajes">$0.00</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span> Conductor</span>
+                        <strong id="costoChofer">$0.00</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span> Mano de Obra</span>
+                        <strong id="costoManoObra">$0.00</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span> Hotel</span>
+                        <strong id="costoHotel">$0.00</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Incentivos</span>
+                        <strong id="costoIncentivos">$0.00</strong>
+                    </div>
+
+                    <hr>
+
+                    <div class="breakdown-item">
+                        <strong>Subtotal</strong>
+                        <strong id="subtotal">$0.00</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Comisión (<span id="comisionPct">15</span>%)</span>
+                        <strong id="costoComision">$0.00</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Guardar -->
+            <button class="btn btn-primary w-100 py-2 mb-2" id="btnGuardar">
+                Guardar Cotización
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
