@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gestión de Usuarios</h2>
+        <a href="{{ url_for('user.create_user') }}" class="btn btn-primary btn-sm">+ Nuevo Usuario</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Usuarios Registrados</strong>
+            <small class="text-muted">{{ users|length }} usuario(s)</small>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover usuarios-table mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if users %}
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user[0] }}</td>
+                            <td>
+                                <span class="usuario-nombre">&#128100; {{ user[1] }}</span>
+                            </td>
+                            <td>{{ user[2] }}</td>
+                            <td>
+                                {% if user[3] == 'admin' %}
+                                    <span class="badge bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-primary">Cotizador</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('user.edit_user', user_id=user[0]) }}" class="btn btn-outline-primary btn-sm" title="Editar">
+                                    &#9998;
+                                </a>
+                                <form method="POST" action="{{ url_for('user.delete_user', user_id=user[0]) }}" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                                        &#128465;
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No hay usuarios registrados.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

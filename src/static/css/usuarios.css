@@ -1,0 +1,82 @@
+/* === Usuarios === */
+
+.usuario-card {
+    max-width: 700px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.usuario-card .card-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 1.25rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.usuario-card .card-body {
+    padding: 1.5rem;
+}
+
+.input-group-text {
+    background-color: #f8fafc;
+    border-right: none;
+    font-size: 1rem;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border-left: none;
+}
+
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+/* === Tabla de Usuarios === */
+
+.usuarios-table {
+    width: 100%;
+}
+
+.usuarios-table thead th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.usuarios-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.usuarios-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.usuario-nombre {
+    font-weight: 500;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: 6px;
+}
+
+/* === Responsive === */
+
+@media (max-width: 768px) {
+    .usuario-card {
+        max-width: 100%;
+    }
+
+    .usuarios-table {
+        font-size: 0.85rem;
+    }
+}

@@ -4,11 +4,12 @@ from flask_login import UserMixin
 
 class User(UserMixin):
     
-    def __init__(self, id, namee, email, password_hash):
+    def __init__(self, id, namee, email, password_hash, role='cotizador'):
         self.id = id
         self.namee = namee
         self.email = email  
         self.password_hash = password_hash
+        self.role = role
 
 
     @classmethod

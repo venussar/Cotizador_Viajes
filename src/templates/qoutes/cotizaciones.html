@@ -25,8 +25,7 @@
 
         <!-- IZQUIERDA: Formulario -->
         <div>
-            <form id="formCotizacion">
-
+            <form id="formCotizacion" method="POST" action="{{ url_for('quote.crear_cotizacion') }}" enctype="application/x-www-form-urlencoded" onsubmit="console.log('Formulario enviado'); return true;">
                 <!-- Tipo de Vehículo -->
                 <div class="card mb-3">
                     <div class="card-header bg-white">
@@ -36,7 +35,12 @@
                         <select class="form-select" id="tipoVehiculo" name="tipo_vehiculo" required>
                             <option value="" selected disabled>Seleccionar vehículo</option>
                             {% for vehiculo in vehiculos %}
-                            <option value="{{ vehiculo.id }}">{{ vehiculo.tipo_vehiculo }}</option>
+                            <option value="{{ vehiculo.id }}"
+                                data-fuel="{{ vehiculo.fuel_consumption_km }}"
+                                data-driver="{{ vehiculo.driver_cost }}"
+                                data-labor="{{ vehiculo.labor_cost }}">
+                                {{ vehiculo.type_vehicles }}
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -52,31 +56,33 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="distancia" class="form-label">Distancia ida y vuelta (km)</label>
-                                <input type="number" class="form-control" id="distancia" placeholder="0" min="0">
+                                <input type="text" class="form-control formato-miles" id="distancia" placeholder="0" inputmode="numeric">
+                                <input type="hidden" name="distancia" id="distancia_raw">
                             </div>
                             <div class="col-md-6">
                                 <label for="precioCombustible" class="form-label">Precio combustible ($/gal)</label>
-                                <input type="number" class="form-control" id="precioCombustible" placeholder="0" min="0"
-                                    step="0.01">
+                                <input type="text" class="form-control formato-miles" id="precioCombustible" placeholder="0" inputmode="numeric">
+                                <input type="hidden" name="precio_combustible" id="precioCombustible_raw">
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="peajes" class="form-label">Valor de peajes ($)</label>
-                                <input type="number" class="form-control" id="peajes" placeholder="0" min="0"
-                                    step="0.01">
+                                <input type="text" class="form-control formato-miles" id="peajes" placeholder="0" inputmode="numeric">
+                                <input type="hidden" name="peajes" id="peajes_raw">
                             </div>
                             <div class="col-md-6">
                                 <label for="incentivos" class="form-label">Incentivos ($)</label>
-                                <input type="number" class="form-control" id="incentivos" placeholder="0" min="0"
-                                    step="0.01">
+                                <input type="text" class="form-control formato-miles" id="incentivos" placeholder="0" inputmode="numeric">
+                                <input type="hidden" name="incentivos" id="incentivos_raw">
                             </div>
                         </div>
 
                         <div class="mb-0">
                             <label for="hotel" class="form-label">Costo de hotel ($)</label>
-                            <input type="number" class="form-control" id="hotel" placeholder="0" min="0" step="0.01">
+                            <input type="text" class="form-control formato-miles" id="hotel" placeholder="0" inputmode="numeric">
+                            <input type="hidden" name="hotel" id="hotel_raw">
                         </div>
 
                     </div>
@@ -90,15 +96,23 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <label class="form-label mb-0">Porcentaje</label>
-                            <span class="comision-valor" id="comisionDisplay">15%</span>
                         </div>
-                        <input type="range" class="form-range" id="comision" min="0" max="50" value="15">
+                        <input type="range" class="form-range" id="comision" name="comision" min="0" max="50" value="15">
                         <div class="d-flex justify-content-between">
                             <small class="text-muted">0%</small>
                             <small class="text-muted">50%</small>
                         </div>
                     </div>
                 </div>
+
+                <!-- Botón Guardar -->
+                <input type="hidden" name="subtotal_hidden" id="hiddenSubtotal">
+                <input type="hidden" name="commission_value_hidden" id="hiddenCommissionValue">
+                <input type="hidden" name="total_hidden" id="hiddenTotal">
+
+                <button class="btn btn-primary w-100 py-2 mb-2" id="btnGuardar" type="submit">
+                    Guardar Cotización
+                </button>
 
             </form>
         </div>
@@ -109,7 +123,7 @@
             <!-- Total -->
             <div class="resumen-total mb-3">
                 <small class="text-uppercase" style="color: #94a3b8;">Costo Total Estimado</small>
-                <div class="total-monto" id="totalGeneral">$0.00</div>
+                <div class="total-monto" id="totalGeneral">$0</div>
                 <small style="color: #64748b;">Incluye comisión</small>
             </div>
 
@@ -121,51 +135,182 @@
                 <div class="card-body">
                     <div class="breakdown-item">
                         <span> Combustible</span>
-                        <strong id="costoCombustible">$0.00</strong>
+                        <strong id="costoCombustible">$0</strong>
                     </div>
                     <div class="breakdown-item">
                         <span>Peajes</span>
-                        <strong id="costoPeajes">$0.00</strong>
+                        <strong id="costoPeajes">$0</strong>
                     </div>
                     <div class="breakdown-item">
                         <span> Conductor</span>
-                        <strong id="costoChofer">$0.00</strong>
+                        <strong id="costoChofer">$0</strong>
                     </div>
                     <div class="breakdown-item">
                         <span> Mano de Obra</span>
-                        <strong id="costoManoObra">$0.00</strong>
+                        <strong id="costoManoObra">$0</strong>
                     </div>
                     <div class="breakdown-item">
                         <span> Hotel</span>
-                        <strong id="costoHotel">$0.00</strong>
+                        <strong id="costoHotel">$0</strong>
                     </div>
                     <div class="breakdown-item">
                         <span>Incentivos</span>
-                        <strong id="costoIncentivos">$0.00</strong>
+                        <strong id="costoIncentivos">$0</strong>
                     </div>
 
                     <hr>
 
                     <div class="breakdown-item">
                         <strong>Subtotal</strong>
-                        <strong id="subtotal">$0.00</strong>
+                        <strong id="subtotal">$0</strong>
                     </div>
                     <div class="breakdown-item">
                         <span>Comisión (<span id="comisionPct">15</span>%)</span>
-                        <strong id="costoComision">$0.00</strong>
+                        <strong id="costoComision">$0</strong>
                     </div>
                 </div>
             </div>
-
-            <!-- Botón Guardar -->
-            <button class="btn btn-primary w-100 py-2 mb-2" id="btnGuardar">
-                Guardar Cotización
-            </button>
 
         </div>
 
     </div>
 </div>
 
+<script>
+    //  Guardar en variables los elementos del formulario
+    //         para poder leer sus valores y modificarlos después.
+    const tipoVehiculoSelect = document.getElementById('tipoVehiculo');       // Dropdown de vehículos
+    const distanciaInput = document.getElementById('distancia');               // Campo de distancia
+    const precioCombustibleInput = document.getElementById('precioCombustible'); // Campo precio galon
+    const peajesInput = document.getElementById('peajes');                     // Campo de peajes
+    const incentivosInput = document.getElementById('incentivos');             // Campo de incentivos
+    const hotelInput = document.getElementById('hotel');                       // Campo de hotel
+    const comisionInput = document.getElementById('comision');                 // Slider de comisión
+
+    //  Guardar en variables los elementos del panel derecho
+    const costoCombustibleDisplay = document.getElementById('costoCombustible');
+    const costoPeajesDisplay = document.getElementById('costoPeajes');
+    const costoChoferDisplay = document.getElementById('costoChofer');
+    const costoManoObraDisplay = document.getElementById('costoManoObra');
+    const costoIncentivosDisplay = document.getElementById('costoIncentivos');
+    const costoHotelDisplay = document.getElementById('costoHotel');
+    const subtotalDisplay = document.getElementById('subtotal');
+    const comisionPctDisplay = document.getElementById('comisionPct');
+    const costoComisionDisplay = document.getElementById('costoComision');
+    const totalGeneralDisplay = document.getElementById('totalGeneral');
+
+    // PASO 3: Guardar en variables los campos OCULTOS (hidden).
+    //         Estos son inputs invisibles que guardan los valores
+    //         calculados (subtotal, comision, total) para enviarlos
+    //         al servidor cuando se hace clic en "Guardar".
+
+    const hiddenSubtotal = document.getElementById('hiddenSubtotal');
+    const hiddenCommissionValue = document.getElementById('hiddenCommissionValue');
+    const hiddenTotal = document.getElementById('hiddenTotal');
+
+
+    function formatCOP(valor) {
+        return '$' + valor.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function formatearInputMiles(input) {
+        // Quitar puntos y todo lo que no sea número
+        const raw = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+        const numero = parseInt(raw) || 0;
+        // Mostrar con formato de miles en el campo visible
+        input.value = numero > 0 ? numero.toLocaleString('es-CO') : '';
+        // Guardar el número limpio en el campo hidden (ej: distancia_raw)
+        const hidden = document.getElementById(input.id + '_raw');
+        if (hidden) hidden.value = numero;
+    }
+
+  
+    // Lee un campo formateado y devuelve el numero limpio  para poder hacer calculos.
+  
+    function getValor(input) {
+        return parseInt(input.value.replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
+    }
+
+
+    document.querySelectorAll('.formato-miles').forEach(function(input) {
+        input.addEventListener('input', function() {
+            formatearInputMiles(this);  // Formatear lo que escribió
+            calcularCostos();           // Recalcular todo el desglose
+        });
+    });
+
+
+    // FUNCIÓN: getVehicleData
+    // Lee los datos del vehículo seleccionado
+    // Estos datos (consumo, costo chofer, mano de obra)
+
+    function getVehicleData() {
+        const selected = tipoVehiculoSelect.selectedOptions[0];
+        if (!selected || !selected.value) {
+            return { fuelConsumption: 0, driverCost: 0, laborCost: 0 };
+        }
+        return {
+            fuelConsumption: parseFloat(selected.dataset.fuel) || 0,   // km por galón
+            driverCost: parseFloat(selected.dataset.driver) || 0,       // costo del conductor
+            laborCost: parseFloat(selected.dataset.labor) || 0          // costo mano de obra
+        };
+    }
+
+ 
+
+    function calcularCostos() {
+        // Leer valores del formulario 
+        const distancia = getValor(distanciaInput);
+        const precioCombustible = getValor(precioCombustibleInput);
+        const peajes = getValor(peajesInput);
+        const incentivos = getValor(incentivosInput);
+        const hotel = getValor(hotelInput);
+        const comision = parseFloat(comisionInput.value) || 0;  // Porcentaje del slider
+        const vehiculo = getVehicleData();                       // Datos del vehículo
+
+        // --- Calcular costo de combustible ---
+        // Fórmula: (distancia / km_por_galon) * precio_del_galon
+        let costoCombustible = 0;
+        if (vehiculo.fuelConsumption > 0) {
+            costoCombustible = (distancia / vehiculo.fuelConsumption) * precioCombustible;
+        }
+
+        // --- Costos fijos del vehículo (vienen de la base de datos) ---
+        const costoChofer = vehiculo.driverCost;
+        const costoManoObra = vehiculo.laborCost;
+
+        // --- Calcular subtotal (suma de todo sin comisión) ---
+        const subtotal = costoCombustible + peajes + incentivos + hotel + costoChofer + costoManoObra;
+
+        // --- Calcular comisión (porcentaje sobre el subtotal) ---
+        const costoComision = (subtotal * comision) / 100;
+
+        // --- Total final = subtotal + comisión ---
+        const totalGeneral = subtotal + costoComision;
+
+        // --- Mostrar cada valor formateado en pesos en el panel derecho ---
+        costoCombustibleDisplay.textContent = formatCOP(costoCombustible);
+        costoPeajesDisplay.textContent = formatCOP(peajes);
+        costoChoferDisplay.textContent = formatCOP(costoChofer);
+        costoManoObraDisplay.textContent = formatCOP(costoManoObra);
+        costoIncentivosDisplay.textContent = formatCOP(incentivos);
+        costoHotelDisplay.textContent = formatCOP(hotel);
+        subtotalDisplay.textContent = formatCOP(subtotal);
+        comisionPctDisplay.textContent = comision;
+        costoComisionDisplay.textContent = formatCOP(costoComision);
+        totalGeneralDisplay.textContent = formatCOP(totalGeneral);
+
+        // datos que se envian al servidor 
+        hiddenSubtotal.value = subtotal.toFixed(2);
+        hiddenCommissionValue.value = costoComision.toFixed(2);
+        hiddenTotal.value = totalGeneral.toFixed(2);
+    }
+
+    // 
+    // EVENTOS: Recalcular cuando cambie el vehículo o la comisión
+    // 
+    tipoVehiculoSelect.addEventListener('change', calcularCostos);
+    comisionInput.addEventListener('input', calcularCostos);
+</script>
 
 {% endblock %}

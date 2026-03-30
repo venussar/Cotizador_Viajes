@@ -31,12 +31,3 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
-
-
-@auth_bp.route('/users', methods=['GET'])
-def list_users():
-    try:
-        users = ModelUser.get_all(db)
-        return render_template('auth/users.html', users=users)
-    except Exception as ex:
-        return str(ex)

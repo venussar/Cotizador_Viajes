@@ -53,6 +53,35 @@
                     <th>Detalles</th>
                 </tr>
             </thead>
+            <tbody>
+                {% if cotizaciones %}
+                    {% for cot in cotizaciones %}
+                    <tr>
+                        <td class="cot-id">
+                            <strong>#{{ cot.id }}</strong><br>
+                            <small>{{ cot.created_at.strftime('%d/%m/%Y %H:%M') if cot.created_at else '' }}</small>
+                        </td>
+                        <td class="cot-vehiculo">{{ cot.vehicle_name or '—' }}</td>
+                        <td>{{ cot.round_trip_distance_km }} km</td>
+                        <td>{{ cot.username or '—' }}</td>
+                        <td class="cot-total"><strong>${{ "%.2f"|format(cot.total) }}</strong></td>
+                        <td>
+                            <button class="btn-detalle" onclick="verDetalle({{ cot.id }})" title="Ver detalle">
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">
+                            No hay cotizaciones registradas aún.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
-            {% endblock %}
+{% endblock %}
