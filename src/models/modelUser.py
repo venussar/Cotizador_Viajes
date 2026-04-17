@@ -19,7 +19,7 @@ class ModelUser:
             cursor = db.connection.cursor()
             # Consulta para obtener datos del usuario por email
             sql = """
-SELECT id, namee, email, ` password_hash`
+SELECT id, namee, email, password_hash
 FROM users
 WHERE email = %s
 """
@@ -42,7 +42,7 @@ WHERE email = %s
     def get_by_id(cls, db, id):
         try:
             cursor = db.connection.cursor()
-            sql = "SELECT id, namee, email, ` password_hash` FROM users WHERE id = %s"
+            sql = "SELECT id, namee, email, password_hash FROM users WHERE id = %s"
             cursor.execute(sql, (id,))
             row = cursor.fetchone()
             if row is not None:

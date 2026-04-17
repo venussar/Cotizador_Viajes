@@ -23,8 +23,7 @@ def create_vehicle():
         data = {
             "type_vehicles": request.form['tipo_vehiculo'],
             "fuel_consumption_km": request.form['consumo_combustible'],
-            "driver_cost": request.form['costo_chofer'],
-            "labor_cost": request.form['costo_mano_obra']
+            "daily_vehicle_cost": request.form['costo_diario_vehiculo']
         }
         ModelVehicle.create(db, data)
         flash('Vehículo creado exitosamente', 'success')
@@ -41,8 +40,7 @@ def edit_vehicle(id):
         data = {
             "type_vehicles": request.form['tipo_vehiculo'],
             "fuel_consumption_km": request.form['consumo_combustible'],
-            "driver_cost": request.form['costo_chofer'],
-            "labor_cost": request.form['costo_mano_obra']
+            "daily_vehicle_cost": request.form['costo_diario_vehiculo']
         }
         ModelVehicle.update(db, id, data)
         flash('Vehículo actualizado exitosamente', 'success')

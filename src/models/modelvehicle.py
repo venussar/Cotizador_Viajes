@@ -7,7 +7,7 @@ class ModelVehicle:
         try:
             cursor = db.connection.cursor()
             sql = """
-                SELECT id, type_vehicles, fuel_consumption_km, driver_cost, labor_cost
+                SELECT id, type_vehicles, fuel_consumption_km, daily_vehicle_cost
                 FROM vehicles
             """
             cursor.execute(sql)
@@ -19,8 +19,7 @@ class ModelVehicle:
                     row[0],
                     row[1],
                     row[2],
-                    row[3],
-                    row[4]
+                    row[3]
                 )
                 vehicles.append(vehicle)
 
@@ -35,7 +34,7 @@ class ModelVehicle:
         try:
             cursor = db.connection.cursor()
             sql = """
-                SELECT id, type_vehicles, fuel_consumption_km, driver_cost, labor_cost
+                SELECT id, type_vehicles, fuel_consumption_km, daily_vehicle_cost
                 FROM vehicles
                 WHERE id = %s  #filtra por id
             """
@@ -47,8 +46,7 @@ class ModelVehicle:
                     row[0],
                     row[1],
                     row[2],
-                    row[3],
-                    row[4]
+                    row[3]
                 )
             else:
                 return None
@@ -61,14 +59,13 @@ class ModelVehicle:
         try:
             cursor = db.connection.cursor()
             sql = """
-                INSERT INTO vehicles (type_vehicles, fuel_consumption_km, driver_cost, labor_cost)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO vehicles (type_vehicles, fuel_consumption_km, daily_vehicle_cost)
+                VALUES (%s, %s, %s)
             """
             cursor.execute(sql, (
                 data["type_vehicles"],
                 data["fuel_consumption_km"],
-                data["driver_cost"],
-                data["labor_cost"]
+                data["daily_vehicle_cost"]
             ))
             db.connection.commit()
         except Exception as ex:
@@ -82,15 +79,13 @@ class ModelVehicle:
                 UPDATE vehicles
                 SET type_vehicles = %s,
                     fuel_consumption_km = %s,
-                    driver_cost = %s,
-                    labor_cost = %s
+                    daily_vehicle_cost = %s
                 WHERE id = %s
             """
             cursor.execute(sql, (
                 data["type_vehicles"],
                 data["fuel_consumption_km"],
-                data["driver_cost"],
-                data["labor_cost"],
+                data["daily_vehicle_cost"],
                 id
             ))
             db.connection.commit()

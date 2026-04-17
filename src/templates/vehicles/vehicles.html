@@ -36,8 +36,7 @@
                     <tr class="text-muted small">
                         <th class="ps-4">TIPO DE VEHÍCULO</th>
                         <th>CONSUMO (KM/GAL)</th>
-                        <th>COSTO CHÓFER</th>
-                        <th>COSTO MANO OBRA</th>
+                        <th>COSTO DIARIO VEHÍCULO</th>
                         <th class="text-center">ACCIONES</th>
                     </tr>
                 </thead>
@@ -46,8 +45,7 @@
                     <tr>
                         <td class="ps-4 fw-semibold">{{ v.type_vehicles }}</td>
                         <td>{{ v.fuel_consumption_km }}</td>
-                        <td>${{ "%.2f"|format(v.driver_cost) }}</td>
-                        <td>${{ "%.2f"|format(v.labor_cost) }}</td>
+                        <td>${{ "%.2f"|format(v.daily_vehicle_cost) }}</td>
                         <td class="text-center">
                             <!-- Botón Editar -->
                             <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
@@ -89,20 +87,11 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold">Costo Conductor ($)</label>
+                                            <label class="form-label fw-semibold">Costo Diario Vehículo ($)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">$</span>
-                                                <input type="number" class="form-control" name="costo_chofer"
-                                                    value="{{ v.driver_cost }}" step="0.01" min="0" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Costo Mano de Obra ($)</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" class="form-control" name="costo_mano_obra"
-                                                    value="{{ v.labor_cost }}" step="0.01" min="0" required>
+                                                <input type="number" class="form-control" name="costo_diario_vehiculo"
+                                                    value="{{ v.daily_vehicle_cost }}" step="0.01" min="0" required>
                                             </div>
                                         </div>
 
@@ -169,23 +158,13 @@
                             step="0.01" min="0" required>
                     </div>
 
-                    <!-- Costo Chófer -->
+                    <!-- Costo Diario Vehículo -->
                     <div class="mb-3">
-                        <label for="costoChofer" class="form-label fw-semibold">Costo Chófer ($)</label>
+                        <label for="costoDiarioVehiculo" class="form-label fw-semibold">Costo Diario Vehículo ($)</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input type="number" class="form-control" id="costoChofer" name="costo_chofer" step="0.01"
+                            <input type="number" class="form-control" id="costoDiarioVehiculo" name="costo_diario_vehiculo" step="0.01"
                                 min="0" required>
-                        </div>
-                    </div>
-
-                    <!-- Costo Mano de Obra -->
-                    <div class="mb-3">
-                        <label for="costoManoObra" class="form-label fw-semibold">Costo Mano de Obra ($)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" class="form-control" id="costoManoObra" name="costo_mano_obra"
-                                step="0.01" min="0" required>
                         </div>
                     </div>
 

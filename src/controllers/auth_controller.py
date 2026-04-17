@@ -17,9 +17,8 @@ def login():
     if request.method == 'POST':
         logged_user = ModelUser.login(db, request.form['namee'], request.form['password_hash'])
         if logged_user is not None:
-            if logged_user.password_hash:
-                login_user(logged_user)
-                return redirect(url_for('dashboard.home'))
+            login_user(logged_user)
+            return redirect(url_for('dashboard.home'))
         else:
             flash('Email o contraseña incorrectos')
         return render_template('auth/login.html')
